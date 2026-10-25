@@ -141,6 +141,13 @@ function forward(upstream, req, bodyBuf) {
     headers['content-length'] = String(Buffer.byteLength(bodyBuf));
     headers['connection'] = 'close';
 
+    // 占位符里常带中文，Node 在设置 header 时会抛 ERR_INVALID_CHAR 并直接崩进程。
+    // 这里提前拦下来，返回 500 让调用方知道是该上游的 key 没配好。
+    const badKey = [upstream.apiKey, upstream.anthropicKey].find((k) => k && /[^\x20-\x7E]/.test(k));
+    if (badKey) {
+      return reject(new Error('apiKey 含非 ASCII 字符，请检查配置是否还留着占位符'));
+    }
+
     const usesAnthropic = /\/v1\/messages(\?|$)/.test(req.url || '');
     const usesGemini = /\/v1beta\//.test(req.url || '');
 
