@@ -300,6 +300,17 @@ node test.mjs
 
 ---
 
+## 相关阅读
+
+如果你在评估「用哪家站的 API」，这几页可能有用（同一维护方整理，数据抓自官方文档）：
+
+- [AI API 价格与选站指南](https://huangjinpeng216.github.io/ai-api-relay-pricing-cn/) — 倍率怎么算、选站五项标准、比价表
+- [DeepSeek / GLM / Kimi 官方价格表](https://huangjinpeng216.github.io/ai-api-relay-pricing-cn/api-price-table.html) — 8 个模型的官方单价，含缓存命中价与峰谷价，标注抓取日期
+- [中转站避雷指南](https://huangjinpeng216.github.io/ai-api-relay-pricing-cn/api-relay-pitfalls.html) — 包括「网站正常但 API 全挂」这种最容易被误判的故障
+- [为什么需要 API 故障转移层](https://huangjinpeng216.github.io/ai-api-relay-pricing-cn/failover-guide.html) — 本工具要解决的问题的完整说明，含一次真实故障的复盘
+
+---
+
 ## License
 
 MIT
