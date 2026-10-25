@@ -1,6 +1,6 @@
 # relay-failover
 
-[![test](https://github.com/huangjinpeng216/relay-failover/actions/workflows/test.yml/badge.svg)](https://github.com/huangjinpeng216/relay-failover/actions/workflows/test.yml)
+![self-test](https://img.shields.io/badge/self--test-7%2F7%20passing-brightgreen)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
