@@ -1,5 +1,7 @@
 # relay-failover
 
+> 中文说明：[README.zh-CN.md](README.zh-CN.md)
+
 ![self-test](https://img.shields.io/badge/self--test-7%2F7%20passing-brightgreen)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
