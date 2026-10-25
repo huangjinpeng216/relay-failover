@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+[![release](https://img.shields.io/github/v/release/huangjinpeng216/relay-failover?label=release)](https://github.com/huangjinpeng216/relay-failover/releases)
 
 把多个 OpenAI 兼容站点组成一个池子，对外只暴露一个地址。**上游超时、5xx、断流时自动切换下一个，客户端无感知。**
 
