@@ -208,6 +208,82 @@ node test.mjs
 
 会启动三个假上游（一个总是 500、一个正常、一个永不响应），验证故障转移真的生效。不需要真实 key。
 
+
+---
+
+## 常见错误
+
+按「新人第一次用」的实际顺序排的。每一行都是真实会撞上的。
+
+### 1. `Cannot find module .../config.json` 或「找不到配置文件」
+
+你还没建 config.json。示例配置只是模板，需要复制一份：
+
+```bash
+cp config.example.json config.json
+```
+
+Windows 上用：
+
+```powershell
+copy config.example.json config.json
+```
+
+### 2. `Invalid character in header content ["authorization"]`
+
+你的 `apiKey` 里还有中文占位符（比如 `sk-把这里换成你的key`）。
+
+Node 往 HTTP header 塞非 ASCII 字符会直接抛异常。把所有中文换成真实 key 即可。
+
+> 新版已经在请求前拦截这种情况，会提示「apiKey 含非 ASCII 字符」，而不是崩给你看。
+
+### 3. `Error: listen EADDRINUSE: address already in use :::8787`
+
+8787 端口被占了。换一个：
+
+```bash
+PORT=8790 node server.mjs          # macOS / Linux
+$env:PORT=8790; node server.mjs    # Windows PowerShell
+```
+
+或者改 `config.json` 里的 `port`。
+
+### 4. 客户端报 404，但 `/health` 是好的
+
+客户端的 `base_url` 填错了。规则是：
+
+| 客户端 | base_url 应填 |
+|---|---|
+| NextChat / Cherry Studio / LobeChat | `http://127.0.0.1:8787/v1` |
+| Cline / Roo Code | `http://127.0.0.1:8787/v1` |
+| Claude Code | `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`（**不带 /v1**） |
+
+很多客户端会自己在后面拼 `/chat/completions`，你多写了 `/v1` 就变成 `/v1/v1/chat/completions` → 404。
+
+### 5. 所有上游都显示 ❌，但站点在浏览器里能打开
+
+大概率是走了系统代理。开着 Hiddify / Clash 之类的软件时，Node 可能也会走代理，导致连不上国内的站。
+
+```bash
+# 临时排除代理
+NO_PROXY="*" node server.mjs      # macOS / Linux
+$env:NO_PROXY="*"; node server.mjs # Windows PowerShell
+```
+
+### 6. 代理跑起来了，但第一次请求特别慢
+
+正常。第一次连接要做 DNS 解析 + TLS 握手，之后复用连接就快了。如果每次请求都慢，看 `/health` 里哪个上游的延迟高。
+
+### 7. 想确认它真的在切换
+
+跑自测，它会启动三个假上游（一个永远 500、一个正常、一个永不响应），打印每一次切换：
+
+```bash
+node test.mjs
+```
+
+看到「上游 500 时自动切换 — status=200」就说明核心逻辑是通的。
+
 ---
 
 ## 注意
