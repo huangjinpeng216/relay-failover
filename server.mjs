@@ -37,14 +37,25 @@ try {
   process.exit(1);
 }
 
-const PORT = Number(process.env.PORT || cfg.port || 8787);
+const rawPort = Number(process.env.PORT || cfg.port || 8787);
+if (!Number.isInteger(rawPort) || rawPort < 1 || rawPort > 65535) {
+  console.error(`port 不合法：${process.env.PORT || cfg.port}（应为 1-65535 的整数）`);
+  process.exit(1);
+}
+const PORT = rawPort;
 const HOST = cfg.host || '127.0.0.1';
 const TIMEOUT_MS = Number(cfg.timeoutMs || 60000);
 const COOLDOWN_MS = Number(cfg.cooldownMs || 60000);
 const MAX_FAILS = Number(cfg.maxConsecutiveFails || 3);
 const VERBOSE = cfg.verbose !== false;
 
-const upstreams = (cfg.upstreams || []).map((u) => ({
+if (!Array.isArray(cfg.upstreams)) {
+  console.error('config.upstreams 必须是数组，例如：');
+  console.error('  "upstreams": [{ "name": "a", "baseUrl": "https://站点/v1", "apiKey": "sk-..." }]');
+  process.exit(1);
+}
+
+const upstreams = cfg.upstreams.map((u) => ({
   name: u.name || u.baseUrl,
   baseUrl: String(u.baseUrl || '').replace(/\/+$/, ''),
   apiKey: u.apiKey || '',
