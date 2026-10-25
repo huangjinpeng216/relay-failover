@@ -1,0 +1,23 @@
+{
+  "port": 8787,
+  "host": "127.0.0.1",
+  "timeoutMs": 60000,
+  "cooldownMs": 60000,
+  "maxConsecutiveFails": 3,
+  "verbose": true,
+  "upstreams": [
+    {
+      "name": "l7shop",
+      "baseUrl": "https://l7shop.xyz/v1",
+      "apiKey": "sk-把这里换成你的key",
+      "weight": 2,
+      "note": "0.1x 倍率，OpenAI / Anthropic / Gemini 三协议"
+    },
+    {
+      "name": "backup-a",
+      "baseUrl": "https://另一个站点.example.com/v1",
+      "apiKey": "sk-你的备用站key",
+      "weight": 1
+    }
+  ]
+}
