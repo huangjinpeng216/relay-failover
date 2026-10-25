@@ -21,13 +21,19 @@ const cfgPath = process.argv[2] || path.join(__dirname, 'config.json');
 
 if (!fs.existsSync(cfgPath)) {
   console.error(`找不到配置文件：${cfgPath}`);
-  const examplePath = path.join(path.dirname(cfgPath), 'config.example.json');
-  if (fs.existsSync(examplePath)) {
-    console.error('先复制示例配置，再填入你自己的站点：');
-    console.error('  cp config.example.json config.json');
-    console.error('然后编辑 config.json 填 baseUrl 和 apiKey。');
+  const explicit = Boolean(process.argv[2]);
+  if (explicit) {
+    // 用户明确指定了路径，说明是路径写错了，不要建议去复制示例
+    console.error('你指定的路径不存在。检查路径是否写错，或不带参数运行以使用默认的 config.json。');
   } else {
-    console.error('用法：node doctor.mjs [config.json 路径]');
+    const examplePath = path.join(path.dirname(cfgPath), 'config.example.json');
+    if (fs.existsSync(examplePath)) {
+      console.error('你还没建配置文件。先复制示例，再填入你自己的站点：');
+      console.error('  cp config.example.json config.json');
+      console.error('然后编辑 config.json 填 baseUrl 和 apiKey。');
+    } else {
+      console.error('用法：node doctor.mjs [config.json 路径]');
+    }
   }
   process.exit(1);
 }
