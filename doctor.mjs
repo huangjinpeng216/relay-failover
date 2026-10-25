@@ -21,7 +21,14 @@ const cfgPath = process.argv[2] || path.join(__dirname, 'config.json');
 
 if (!fs.existsSync(cfgPath)) {
   console.error(`找不到配置文件：${cfgPath}`);
-  console.error('用法：node doctor.mjs [config.json 路径]');
+  const examplePath = path.join(path.dirname(cfgPath), 'config.example.json');
+  if (fs.existsSync(examplePath)) {
+    console.error('先复制示例配置，再填入你自己的站点：');
+    console.error('  cp config.example.json config.json');
+    console.error('然后编辑 config.json 填 baseUrl 和 apiKey。');
+  } else {
+    console.error('用法：node doctor.mjs [config.json 路径]');
+  }
   process.exit(1);
 }
 
@@ -52,8 +59,17 @@ function probe(u) {
 
     const headers = { accept: 'application/json' };
     const key = u.apiKey || '';
+    // 占位符里常带中文，Node 会在设置 header 时抛 ERR_INVALID_CHAR，先拦下来
+    if (/[^\x20-\x7E]/.test(key)) {
+      return resolve({ ok: false, reason: 'apiKey 含非 ASCII 字符（大概是还没换成真实 key）', ms: 0 });
+    }
     if (key) headers.authorization = `Bearer ${key}`;
-    if (u.anthropicKey) headers['x-api-key'] = u.anthropicKey;
+    if (u.anthropicKey) {
+      if (/[^\x20-\x7E]/.test(u.anthropicKey)) {
+        return resolve({ ok: false, reason: 'anthropicKey 含非 ASCII 字符', ms: 0 });
+      }
+      headers['x-api-key'] = u.anthropicKey;
+    }
     headers['user-agent'] = 'relay-failover-doctor';
 
     const req = mod.request(
