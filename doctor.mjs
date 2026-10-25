@@ -33,11 +33,12 @@ if (!fs.existsSync(cfgPath)) {
 }
 
 const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
-const upstreams = cfg.upstreams || [];
-if (!upstreams.length) {
-  console.error('config.upstreams 为空');
+if (!Array.isArray(cfg.upstreams) || cfg.upstreams.length === 0) {
+  console.error('config.upstreams 必须是至少包含一个站点的数组，例如：');
+  console.error('  "upstreams": [{ "name": "a", "baseUrl": "https://站点/v1", "apiKey": "sk-..." }]');
   process.exit(1);
 }
+const upstreams = cfg.upstreams;
 
 const TIMEOUT = Number(cfg.timeoutMs || 20000);
 
